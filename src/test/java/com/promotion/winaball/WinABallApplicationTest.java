@@ -39,10 +39,10 @@ public class WinABallApplicationTest {
         new TestDatabaseInitializer().initialize(dataSource);
     }
 
-	@Test
-	public void contextLoads() {
+    @Test
+    public void contextLoads() {
 
-	}
+    }
 
     @Test
     public void redemptionTestNotWinner(){
