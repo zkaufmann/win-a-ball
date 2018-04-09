@@ -2,12 +2,14 @@ package com.promotion.winaball;
 
 import com.promotion.winaball.service.CouponRedemptionService;
 import com.promotion.winaball.service.dto.Customer;
-import com.promotion.winaball.service.dto.RedemptionResult;
 import com.promotion.winaball.service.dto.RedemptionAttempt;
+import com.promotion.winaball.service.dto.RedemptionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RedemptionAttemptRunnable implements Runnable {
@@ -17,6 +19,7 @@ public class RedemptionAttemptRunnable implements Runnable {
     private static final String TERRITORY_LUCKY_LAND = "LuckyLand";
 
     private static AtomicInteger nextCouponCode = new AtomicInteger(1_000_000_000);
+    private static CopyOnWriteArrayList<Boolean> results = new CopyOnWriteArrayList<>();
 
     private final Customer customer;
     private final CouponRedemptionService couponRedemptionService;
@@ -25,6 +28,10 @@ public class RedemptionAttemptRunnable implements Runnable {
                                      final CouponRedemptionService couponRedemptionService) {
         this.customer = customer;
         this.couponRedemptionService = couponRedemptionService;
+    }
+
+    public static List<Boolean> getResults() {
+        return Collections.unmodifiableList(results);
     }
 
     @Override
@@ -44,6 +51,7 @@ public class RedemptionAttemptRunnable implements Runnable {
                     redemptionAttempt.getCustomer().getName(), redemptionAttempt.getCouponCode());
 
             final RedemptionResult redemptionResult = couponRedemptionService.redeemCoupon(redemptionAttempt);
+            results.add(redemptionResult.getWinner().get());
 
             LOGGER.info("REDEEEM - {} - {} - {}",
                     redemptionAttempt.getCustomer().getName(), redemptionAttempt.getCouponCode(), redemptionResult);

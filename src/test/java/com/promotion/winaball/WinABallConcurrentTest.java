@@ -4,6 +4,7 @@ import com.promotion.winaball.service.CouponRedemptionService;
 import com.promotion.winaball.service.dto.Customer;
 import com.promotion.winaball.testutils.TestDatabaseInitializer;
 import com.promotion.winaball.testutils.TestThreadFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,18 @@ public class WinABallConcurrentTest {
 
         future1.get();
         future2.get();
+
+        // assert every second attempt is winner
+        Assert.assertEquals(false, RedemptionAttemptRunnable.getResults().get(0));
+        Assert.assertEquals(true, RedemptionAttemptRunnable.getResults().get(1));
+        Assert.assertEquals(false, RedemptionAttemptRunnable.getResults().get(2));
+        Assert.assertEquals(true, RedemptionAttemptRunnable.getResults().get(3));
+        Assert.assertEquals(false, RedemptionAttemptRunnable.getResults().get(4));
+        Assert.assertEquals(true, RedemptionAttemptRunnable.getResults().get(5));
+        Assert.assertEquals(false, RedemptionAttemptRunnable.getResults().get(6));
+        Assert.assertEquals(true, RedemptionAttemptRunnable.getResults().get(7));
+        Assert.assertEquals(false, RedemptionAttemptRunnable.getResults().get(8));
+        Assert.assertEquals(true, RedemptionAttemptRunnable.getResults().get(9));
     }
 
 }
